@@ -23,10 +23,10 @@ it under the terms of the one of two licenses as you choose:
 #include <exception>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <io.h>
 #if !defined(_WIN32) && !defined(__MINGW32__)
 #include <netinet/in.h>
 #else
+#include <io.h>
 #include <winsock2.h>
 #endif
 #define LIBRAW_LIBRARY_BUILD
@@ -3897,11 +3897,12 @@ int LibRaw::dcraw_ppm_tiff_writer(const char *filename, bool bStdOut)
     if (!f)
       return errno;
   }
+#if defined(_WIN32) || defined(__MINGW32__)
   else
   {
     _setmode(fileno(stdout), O_BINARY);
   }
-
+#endif
   try
   {
     if (!libraw_internal_data.output_data.histogram)
